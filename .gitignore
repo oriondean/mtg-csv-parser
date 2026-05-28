@@ -1,0 +1,5 @@
+node_modules
+input/*
+output/*
+data/*
+.github/copilot-instructions.md
