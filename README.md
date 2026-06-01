@@ -17,6 +17,8 @@ npm install
 
 ```bash
 node index.js
+# or
+npm start
 ```
 
 All `.csv` files found in the `input/` directory are processed. Output files are written to `output/` with the same filename as their corresponding input file. The `output/` directory is created automatically if it does not exist.
@@ -75,8 +77,8 @@ For each input CSV:
 2. **Filter** — rows whose `Set Code` is a known non-main set (e.g. commander, promo) are dropped. Rows with a collector number above the set's base set size are also dropped.
 3. **Merge** — duplicate rows for the same `Card Number` are collapsed into a single row. Quantities are summed, and the lowest `MARKET` price found across the duplicates is kept.
 4. **Sort** — rows are sorted numerically by `Card Number`.
-5. **Fill gaps** — any card numbers missing from the contiguous range `[min, max]` have placeholder rows inserted (`Card Name: ???`, `Quantity: 0`).
-6. **Detect set code** — the MTG set code (e.g. `FIN`) is read from the first row that has a `Set Code` value.
+5. **Fill gaps** — any card numbers missing from `[1, max]` have placeholder rows inserted (`Card Name: ???`, `Quantity: 0`), where `max` is the greater of the highest card number found and the set's base set size.
+6. **Detect set codes** — all unique set codes present in the file's rows are collected for use in Phase 2.
 
 ### Phase 2 — Load reference data (once)
 
@@ -179,7 +181,7 @@ Contains one row per price entry. Rows are filtered to `priceProvider=tcgplayer`
 
 ### `lib/missingCards.js`
 
-- **`findMissingCardNumbers(rows)`** — returns `{ missing, min, max }` where `missing` is all integers in `[min, max]` that have no corresponding row.
+- **`findMissingCardNumbers(rows, maxCardNum)`** — returns `{ missing, min, max }` where `missing` is all integers in `[1, max]` that have no corresponding row. `max` is the greater of the highest card number in `rows` and `maxCardNum` (if provided).
 - **`insertPlaceholders(rows, missingNumbers)`** — creates zero-quantity placeholder rows for each missing number and returns the combined sorted list.
 
 ### `lib/cardNames.js`
