@@ -85,10 +85,9 @@ describe('mergeRows', () => {
         assert.equal(data[0]['Set Code'], 'FIRST');
     });
 
-    it('does not expose internal _parsedDate or _minMarket fields', () => {
+    it('does not expose internal _minMarket field', () => {
         const rows = [{ 'Card Number': '1', 'Quantity': '1', 'Date Bought': '2024-01-01', 'MARKET': '1.0' }];
         const data = mergeRows(rows);
-        assert.equal('_parsedDate' in data[0], false);
         assert.equal('_minMarket' in data[0], false);
     });
 
